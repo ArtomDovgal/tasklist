@@ -1,0 +1,44 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  cache:
+    type: redis
+    cache-names: redis-cache
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+      password: ${REDIS_PASSWORD}
+  datasource:
+    url: jdbc:postgresql://${DATABASE_HOST}:5432/${POSTGRES_DATABASE}?currentSchema=tasklist
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: never
+      continue-on-error: false
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+  output:
+    ansi:
+      enabled: always
+  liquibase:
+    change-log: classpath:liquibase/db.changelog.yaml
+    enabled: true
+    default-schema: tasklist
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    access: 1
+    refresh: 30
+logging:
+  level:
+    liquibase: DEBUG
+    org.springframework.boot.autoconfigure.liquibase: DEBUG
+springdoc:
+  override-with-generic-response: false
+
