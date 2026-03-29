@@ -27,8 +27,6 @@ spring:
     change-log: classpath:liquibase/db.changelog.yaml
     enabled: true
     default-schema: tasklist
-mybatis:
-  mapper-locations: classpath:mybatis/mapper/*.xml
 
 security:
   jwt:
@@ -42,3 +40,8 @@ logging:
 springdoc:
   override-with-generic-response: false
 
+minio:
+  bucket: ${MINIO_BUCKET}
+  url: ${MINIO_URL}
+  accessKey: ${MINIO_ACCESS_KEY}
+  secretKey: ${MINIO_SECRET_KEY}

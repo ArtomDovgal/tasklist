@@ -1,8 +1,10 @@
 package dev.dov.tasklist.config;
 
+import dev.dov.tasklist.service.props.MinioProperties;
 import dev.dov.tasklist.web.security.JwtTokenFilter;
 import dev.dov.tasklist.web.security.JwtTokenProvider;
 import dev.dov.tasklist.web.security.expression.CustomSecurityExceptionHandler;
+import io.minio.MinioClient;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -27,6 +29,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,6 +44,17 @@ public class ApplicationConfig {
 
     private final JwtTokenProvider tokenProvider;
     private final ApplicationContext applicationContext;
+    private final MinioProperties minioProperties;
+
+    @Bean
+    public MinioClient minioClient(){
+
+        return MinioClient.builder()
+                .endpoint(minioProperties.getUrl())
+                .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
+                .build();
+
+    }
 
     @Bean
     public OpenAPI openAPI(){
@@ -110,7 +124,7 @@ public class ApplicationConfig {
                     configure.requestMatchers("/v3/api-docs/**").permitAll();
                     configure.anyRequest().authenticated();
                 })
-                .anonymous(anonymous -> anonymous.disable())
+                //.anonymous(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new JwtTokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();

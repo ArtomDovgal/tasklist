@@ -24,6 +24,7 @@ public class JwtTokenFilter extends GenericFilterBean {
         String path = httpRequest.getServletPath();
 
         if (path.startsWith("/api/v1/auth")) {
+            logger.warn("We here why?");
             filterChain.doFilter(servletRequest,servletResponse);
             return;
         }
@@ -35,16 +36,20 @@ public class JwtTokenFilter extends GenericFilterBean {
         }
 
         if(bearerToken != null && jwtTokenProvider.validateToken(bearerToken)){
-
+            logger.warn("We here1");
             try {
+                logger.warn("We here2");
                 Authentication authentication = jwtTokenProvider.getAuthentication(bearerToken);
                 if(authentication != null){
+                    logger.warn("We here3");
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }catch (ResourceNotFoundException e){
+                logger.warn("User not found from token");
             }
         }
 
+        logger.warn("We here4");
         filterChain.doFilter(servletRequest,servletResponse);
     }
 }

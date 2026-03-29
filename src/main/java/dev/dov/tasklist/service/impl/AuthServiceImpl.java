@@ -8,12 +8,14 @@ import dev.dov.tasklist.web.dto.auth.JwtRequest;
 import dev.dov.tasklist.web.dto.auth.JwtResponse;
 import dev.dov.tasklist.web.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
@@ -25,9 +27,11 @@ public class AuthServiceImpl implements AuthService {
     public JwtResponse login(JwtRequest loginRequest) {
 
         JwtResponse jwtResponse = new JwtResponse();
+        log.warn("after authenticationManager.authenticate1");
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
-
+        log.warn("after authenticationManager.authenticate2");
         User user = userService.getByUsername(loginRequest.getUsername());
+        log.warn("after authenticationManager.authenticate3");
         jwtResponse.setId(user.getId());
         jwtResponse.setName(user.getName());
         jwtResponse.setUsername(user.getUsername());

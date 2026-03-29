@@ -7,6 +7,7 @@ import dev.dov.tasklist.domain.user.User;
 import dev.dov.tasklist.repository.UserRepository;
 import dev.dov.tasklist.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,6 +21,7 @@ import java.util.Set;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -38,11 +40,15 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Cacheable(value = "UserService::getByUsername", key = "#username")
     public User getByUsername(String username) {
+        log.warn("before found userRepository.findByUsername(username)1");
         Optional<User> user = userRepository.findByUsername(username);
+        log.warn("after found userRepository.findByUsername(username)2");
         if(user.isEmpty()){
+            log.warn("we dont find user");
             throw new IllegalStateException("User not exists");
         }
 
+        log.warn("user is found");
         return user.get();
     }
 
@@ -55,7 +61,7 @@ public class UserServiceImpl implements UserService {
     )
     public User update(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.update(user);
+        userRepository.save(user);
         return user;
     }
 
@@ -70,10 +76,9 @@ public class UserServiceImpl implements UserService {
             throw new IllegalStateException("Password and password confirmation do not match");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.create(user);
         Set<Role> roles = Set.of(Role.ROLE_USER);
-        userRepository.insertUserRole(user.getId(), Role.ROLE_USER);
         user.setRoles(roles);
+        userRepository.save(user);
         return user;
     }
 
@@ -89,6 +94,6 @@ public class UserServiceImpl implements UserService {
     @CacheEvict(value = "UserService::getById", key = "#id")
     public void delete(Long id) {
 
-        userRepository.delete(id);
+        userRepository.deleteById(id);
     }
 }
