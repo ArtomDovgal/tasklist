@@ -1,7 +1,10 @@
 package dev.dov.tasklist.web.security;
 
 import dev.dov.tasklist.domain.exeption.ResourceNotFoundException;
-import jakarta.servlet.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;

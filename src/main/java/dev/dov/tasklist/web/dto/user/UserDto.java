@@ -2,17 +2,12 @@ package dev.dov.tasklist.web.dto.user;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.dov.tasklist.domain.task.Task;
-import dev.dov.tasklist.domain.user.Role;
 import dev.dov.tasklist.web.dto.validation.OnCreate;
 import dev.dov.tasklist.web.dto.validation.OnUpdate;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-
-import java.util.List;
-import java.util.Set;
 
 @Data
 @Schema(description = "User DTO")
