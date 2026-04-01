@@ -1,7 +1,6 @@
 package dev.dov.tasklist.service.impl;
 
 import dev.dov.tasklist.domain.exeption.ResourceNotFoundException;
-import dev.dov.tasklist.domain.task.Task;
 import dev.dov.tasklist.domain.user.Role;
 import dev.dov.tasklist.domain.user.User;
 import dev.dov.tasklist.repository.UserRepository;

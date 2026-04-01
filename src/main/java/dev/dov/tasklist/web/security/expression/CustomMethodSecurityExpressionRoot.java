@@ -4,7 +4,6 @@ import dev.dov.tasklist.domain.user.Role;
 import dev.dov.tasklist.service.UserService;
 import dev.dov.tasklist.web.security.JwtEntity;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 import org.jspecify.annotations.Nullable;
@@ -15,8 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.function.Supplier;
 
 @Service
 @Setter

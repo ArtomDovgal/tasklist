@@ -20,16 +20,11 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
-import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,18 +42,23 @@ public class ApplicationConfig {
     private final MinioProperties minioProperties;
 
     @Bean
-    public MinioClient minioClient(){
+    public MinioClient minioClient() {
 
         return MinioClient.builder()
                 .endpoint(minioProperties.getUrl())
-                .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
+                .credentials(
+                        minioProperties.getAccessKey(),
+                        minioProperties.getSecretKey()
+                )
                 .build();
 
     }
 
     @Bean
-    public OpenAPI openAPI(){
-        return new OpenAPI().addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+    public OpenAPI openAPI() {
+        return new OpenAPI().addSecurityItem(
+                new SecurityRequirement().addList("bearerAuth")
+                )
                 .components(
                         new Components().addSecuritySchemes("bearerAuth",
                                 new SecurityScheme()
@@ -75,31 +75,30 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
+    public RedisCacheManager cacheManager(final RedisConnectionFactory redisConnectionFactory) {
         return RedisCacheManager.builder(redisConnectionFactory).build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
-
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration){
+    public AuthenticationManager authenticationManager( final AuthenticationConfiguration configuration) {
 
         return configuration.getAuthenticationManager();
     }
 
     @Bean
-    public MethodSecurityExpressionHandler expressionHandler(){
+    public MethodSecurityExpressionHandler expressionHandler() {
         DefaultMethodSecurityExpressionHandler expressionHandler = new CustomSecurityExceptionHandler();
         expressionHandler.setApplicationContext(applicationContext);
         return expressionHandler;
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity){
+    public SecurityFilterChain filterChain(final HttpSecurity httpSecurity) {
 
         httpSecurity
                 .csrf(csrf -> csrf.disable())
@@ -108,8 +107,8 @@ public class ApplicationConfig {
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(
-                        exceptionHandling ->{
-                            exceptionHandling.authenticationEntryPoint((request, response, authException) ->{
+                        exceptionHandling -> {
+                            exceptionHandling.authenticationEntryPoint((request, response, authException) -> {
                                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                                     response.getWriter().write("Unauthorized");
                             });
@@ -118,7 +117,7 @@ public class ApplicationConfig {
                                 response.getWriter().write("Unauthorized");
                             });
                         })
-                .authorizeHttpRequests(configure ->{
+                .authorizeHttpRequests(configure -> {
                     configure.requestMatchers("/api/v1/auth/**").permitAll();
                     configure.requestMatchers("/swagger-ui/**").permitAll();
                     configure.requestMatchers("/v3/api-docs/**").permitAll();

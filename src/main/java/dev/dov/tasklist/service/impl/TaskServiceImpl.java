@@ -6,7 +6,6 @@ import dev.dov.tasklist.domain.task.Task;
 import dev.dov.tasklist.domain.task.TaskImage;
 import dev.dov.tasklist.domain.user.User;
 import dev.dov.tasklist.repository.TaskRepository;
-import dev.dov.tasklist.repository.UserRepository;
 import dev.dov.tasklist.service.ImageService;
 import dev.dov.tasklist.service.TaskService;
 import dev.dov.tasklist.service.UserService;

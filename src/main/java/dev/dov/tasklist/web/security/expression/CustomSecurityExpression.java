@@ -3,7 +3,6 @@ package dev.dov.tasklist.web.security.expression;
 import dev.dov.tasklist.domain.user.Role;
 import dev.dov.tasklist.service.UserService;
 import dev.dov.tasklist.web.security.JwtEntity;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
