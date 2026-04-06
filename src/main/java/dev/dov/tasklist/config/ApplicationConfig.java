@@ -121,6 +121,7 @@ public class ApplicationConfig {
                     configure.requestMatchers("/api/v1/auth/**").permitAll();
                     configure.requestMatchers("/swagger-ui/**").permitAll();
                     configure.requestMatchers("/v3/api-docs/**").permitAll();
+                    configure.requestMatchers("/graphiql").permitAll();
                     configure.anyRequest().authenticated();
                 })
                 //.anonymous(AbstractHttpConfigurer::disable)
