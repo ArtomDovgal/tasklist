@@ -1,7 +1,6 @@
 type Query {
 
     userById(id: ID): User
-    taskById(id: ID): [Task]
     taskById(id: ID): Task
 }
 

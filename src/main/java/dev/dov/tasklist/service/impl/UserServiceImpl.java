@@ -1,9 +1,11 @@
 package dev.dov.tasklist.service.impl;
 
+import dev.dov.tasklist.domain.MailType;
 import dev.dov.tasklist.domain.exeption.ResourceNotFoundException;
 import dev.dov.tasklist.domain.user.Role;
 import dev.dov.tasklist.domain.user.User;
 import dev.dov.tasklist.repository.UserRepository;
+import dev.dov.tasklist.service.MailService;
 import dev.dov.tasklist.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Set;
 
 
@@ -26,6 +29,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MailService mailService;
 
     @Override
     @Transactional(readOnly = true)
@@ -44,7 +48,7 @@ public class UserServiceImpl implements UserService {
         log.warn("after found userRepository.findByUsername(username)2");
         if(user.isEmpty()){
             log.warn("we dont find user");
-            throw new IllegalStateException("User not exists");
+            throw new ResourceNotFoundException("User not exists");
         }
 
         log.warn("user is found");
@@ -78,6 +82,7 @@ public class UserServiceImpl implements UserService {
         Set<Role> roles = Set.of(Role.ROLE_USER);
         user.setRoles(roles);
         userRepository.save(user);
+        mailService.sendEmail(user, MailType.REGISTRATION, new Properties());
         return user;
     }
 
@@ -94,5 +99,14 @@ public class UserServiceImpl implements UserService {
     public void delete(Long id) {
 
         userRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = "UserService::getTaskAuthor", key = "#taskId")
+    public User getTaskAuthor(Long taskId) {
+
+        return userRepository.findTaskAuthor(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
     }
 }

@@ -13,7 +13,7 @@ public class GraphConfiguration {
         return GraphQLScalarType.newScalar()
                 .name("LocalDateTime")
                 .description("LocalDateTime scalar")
-                .coercing(new LocaDateTimeCoercing())
+                .coercing(new LocalDateTimeCoercing())
                 .build();
     }
 

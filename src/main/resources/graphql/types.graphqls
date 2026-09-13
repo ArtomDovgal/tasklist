@@ -14,7 +14,7 @@ input InputUser{
     passwordConfirmation: String
 }
 
-input Task {
+type Task {
     id: ID
     title: String
     description: String
@@ -23,7 +23,7 @@ input Task {
     images: [String]
 }
 
-input inputTask {
+input InputTask {
     id: ID
     title: String
     description: String
